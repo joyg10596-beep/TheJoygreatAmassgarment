@@ -188,3 +188,4 @@ public:
         }
     }
     ~RealTimeMemoryArena() { ::VirtualUnlock(arenaBackingBuffer, totalSize); ::VirtualFree(arenaBackingBuffer, 0, MEM_RELEASE); }
+void run() override {
