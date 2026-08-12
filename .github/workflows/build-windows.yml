@@ -1,0 +1,29 @@
+name: Windows Production Build Matrix
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Source Core
+      uses: actions/checkout@v4
+
+    - name: Set up MSVC Compiler Matrix
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Run Self-Healing Workspace Meta Generator Pass
+      run: |
+        cl.exe /EHsc /DGITHUB_ACTIONS_RUNNER_BOOTSTRAP Main.cpp /fe:Generator.exe
+        ./Generator.exe
+
+    - name: Configure CMake Environment
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release .
+
+    - name: Execute Bare-Metal Production Compilation Pass
+      run: cmake --build build --config Release
